@@ -13,4 +13,6 @@ app.app_context()
 # Create a database
 db = SQLAlchemy(app)
 
+# Remember that the code base in this __init__.py and routes.py used to be one, 
+# now we have to import it so that python know where to run next.
 from flaskblog import routes
