@@ -13,6 +13,7 @@ from flask_login import login_user
 from flask_login import current_user
 from flask_login import logout_user
 from flask_login import login_required
+from flask import request
 
 all_posts = [
     {
@@ -72,6 +73,7 @@ def login_page():
         return redirect(url_for("home_page"))
 
     form = LoginForm()
+
     # if not valid or unsuccessful, then stay at the same login page
     if form.validate_on_submit():
         # Get data from the database
@@ -80,7 +82,15 @@ def login_page():
         # Check the user exist and the password is the same, if so, keep the user login
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for("home_page"))
+
+            # Let's say we get to account but no login, we want the site to direct to
+            # login then go back to account, instead of home page
+            next_page = request.args.get("next")
+            return (
+                redirect(next_page)
+                if next_page != None
+                else redirect(url_for("home_page"))
+            )
         else:
             flash(f"Login Unsuccessful. Please check email and password", "danger")
     return render_template("login.html", title="Login", form=form)
