@@ -27,3 +27,4 @@ python main.py
 - User Authentication
   - Password hashing with bcrypt.
   - Flask-Login for user-session manager!
+  - If login successful, if try to log-in again, we will redirect to about page

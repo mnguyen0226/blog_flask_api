@@ -10,6 +10,7 @@ from flaskblog import bcrypt
 from flaskblog.models import User
 from flaskblog.models import Post
 from flask_login import login_user
+from flask_login import current_user
 
 all_posts = [
     {
@@ -40,6 +41,10 @@ def about_page():
 
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
+    # If the valid user is login, go back to homepage
+    if current_user.is_authenticated:
+        return redirect(url_for("home_page"))
+
     form = RegistrationForm()
 
     # after we hit submit, we need to validate the form prior to go
@@ -60,6 +65,10 @@ def register_page():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
+    # If the valid user is login, go back to homepage
+    if current_user.is_authenticated:
+        return redirect(url_for("home_page"))
+
     form = LoginForm()
     # if not valid or unsuccessful, then stay at the same login page
     if form.validate_on_submit():
