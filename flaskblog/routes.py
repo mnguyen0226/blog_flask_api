@@ -14,6 +14,7 @@ from flask_login import current_user
 from flask_login import logout_user
 from flask_login import login_required
 from flask import request
+from flaskblog.forms import UpdateAccountForm
 
 all_posts = [
     {
@@ -103,8 +104,26 @@ def logout_page():
     return redirect(url_for("home_page"))
 
 
-@app.route("/account")
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account_page():
+    form = UpdateAccountForm()
+
+    # If form is valid, we will update on the database
+    # After submit the valid form, we redirect (get-request), if not we try with a post request again
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash("Your account has been updated!", "success")
+        return redirect(url_for("account_page"))  # GET request
+
+    # if not submit, then we can try to auto-fill the form
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
     image_file = url_for("static", filename="profile_pics/" + current_user.image_file)
-    return render_template("account.html", title="Account", image_file=image_file)
+    return render_template(
+        "account.html", title="Account", image_file=image_file, form=form
+    )
