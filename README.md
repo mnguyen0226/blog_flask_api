@@ -20,3 +20,7 @@ python main.py
     import secrets
     secrets.token_hex(16)
   ```
+- ORM = Object Relation Mapper
+  - Need to specify URI for database (where it located).
+  - One-to-many relationship. When we have a post, we can get the author of the post. Lazy = load data from database (to load data in one go), we can get all the posts from single user. Here we reference thee Post class
+  - If of the user who write the post. User here is lower case as we reference the table name and column name. the table name is auto reset as lowercase of the class

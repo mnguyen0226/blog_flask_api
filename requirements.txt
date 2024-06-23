@@ -2,3 +2,4 @@ flask
 black
 flask-wtf
 email-validator
+flask-sqlalchemy
