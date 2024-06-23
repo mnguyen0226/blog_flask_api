@@ -11,6 +11,7 @@ from flaskblog.models import User
 from flaskblog.models import Post
 from flask_login import login_user
 from flask_login import current_user
+from flask_login import logout_user
 
 all_posts = [
     {
@@ -82,3 +83,10 @@ def login_page():
         else:
             flash(f"Login Unsuccessful. Please check email and password", "danger")
     return render_template("login.html", title="Login", form=form)
+
+
+@app.route("/logout")
+def logout_page():
+    # Log user out and redirect to homepage
+    logout_user()
+    return redirect(url_for("home_page"))
