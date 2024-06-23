@@ -23,6 +23,9 @@ login_manager = LoginManager(app)
 # Set the login route, so if not login and try to access account, we will go to login page
 login_manager.login_view = "login_page"
 
+# To change the flash category (alert color), we can set the bootstrap class here
+login_manager.login_message_category = "info"
+
 # Remember that the code base in this __init__.py and routes.py used to be one,
 # now we have to import it so that python know where to run next.
 from flaskblog import routes
