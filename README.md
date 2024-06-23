@@ -28,3 +28,4 @@ python main.py
   - Password hashing with bcrypt.
   - Flask-Login for user-session manager!
   - If login successful, if try to log-in again, we will redirect to about page
+  - Put restriction on certain route once you login. Ex: You can't change post if not log-in.

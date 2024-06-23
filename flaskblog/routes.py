@@ -12,6 +12,7 @@ from flaskblog.models import Post
 from flask_login import login_user
 from flask_login import current_user
 from flask_login import logout_user
+from flask_login import login_required
 
 all_posts = [
     {
@@ -90,3 +91,9 @@ def logout_page():
     # Log user out and redirect to homepage
     logout_user()
     return redirect(url_for("home_page"))
+
+
+@app.route("/account")
+@login_required
+def account_page():
+    return render_template("account.html", title="Account")
