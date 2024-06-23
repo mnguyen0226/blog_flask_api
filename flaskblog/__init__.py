@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_bcrypt import Bcrypt
 
 # Flask know where to look for template file
 app = Flask(__name__)
@@ -13,6 +13,9 @@ app.app_context()
 # Create a database
 db = SQLAlchemy(app)
 
-# Remember that the code base in this __init__.py and routes.py used to be one, 
+# Create a hash for app
+bcrypt = Bcrypt(app)
+
+# Remember that the code base in this __init__.py and routes.py used to be one,
 # now we have to import it so that python know where to run next.
 from flaskblog import routes

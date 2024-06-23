@@ -5,6 +5,10 @@ from flask import redirect
 from flaskblog.forms import RegistrationForm
 from flaskblog.forms import LoginForm
 from flaskblog import app
+from flaskblog import db
+from flaskblog import bcrypt
+from flaskblog.models import User
+from flaskblog.models import Post
 
 all_posts = [
     {
@@ -41,8 +45,15 @@ def register_page():
     # back to the same Register Form, we will send in the one time alert
     # we will then redirect the user back to the home page
     if form.validate_on_submit():
-        flash(f"Account created for {form.username.data}!", "success")
-        return redirect(url_for("home_page"))
+        # If register, create a new instance of user
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        user = User(
+            username=form.username.data, email=form.email.data, password=hashed_pw
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash(f"Your account has been created!", "success")
+        return redirect(url_for("login_page"))
     return render_template("register.html", title="Register", form=form)
 
 
