@@ -1,2 +1,4 @@
 flask
 black
+flask-wtf
+email-validator
