@@ -52,9 +52,16 @@ def register_page():
     return render_template("register.html", title="Register", form=form)
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login_page():
     form = LoginForm()
+    # if not valid or unsuccessful, then stay at the same login page
+    if form.validate_on_submit():
+        if form.email.data == "admin@blog.com" and form.password.data == "password":
+            flash(f"You have been logged in!", "success")
+            return redirect(url_for("home_page"))
+        else:
+            flash(f"Login Unsuccessful. Please check username and password", "danger")
     return render_template("login.html", title="Login", form=form)
 
 
