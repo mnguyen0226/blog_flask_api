@@ -28,8 +28,14 @@
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
-                <a class="nav-item nav-link" href="{{url_for('login_page')}}">Login</a>
-                <a class="nav-item nav-link" href="{{url_for('register_page')}}">Register</a>
+                <!--If the user is login, the we show the logout button-->
+                {% if current_user.is_authenticated %}
+                  <a class="nav-item nav-link" href="{{url_for('account_page')}}">Account</a>
+                  <a class="nav-item nav-link" href="{{url_for('logout_page')}}">Logout</a>
+                {% else %}
+                  <a class="nav-item nav-link" href="{{url_for('login_page')}}">Login</a>
+                  <a class="nav-item nav-link" href="{{url_for('register_page')}}">Register</a>
+                {% endif %}
               </div>
             </div>
           </div>
