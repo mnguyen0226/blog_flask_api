@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 
 # Flask know where to look for template file
 app = Flask(__name__)
@@ -15,6 +16,9 @@ db = SQLAlchemy(app)
 
 # Create a hash for app
 bcrypt = Bcrypt(app)
+
+# User-login session handler
+login_manager = LoginManager(app)
 
 # Remember that the code base in this __init__.py and routes.py used to be one,
 # now we have to import it so that python know where to run next.

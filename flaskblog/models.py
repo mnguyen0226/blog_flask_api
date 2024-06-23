@@ -1,9 +1,17 @@
 from flaskblog import db
 from datetime import datetime
+from flaskblog import login_manager
+from flask_login import UserMixin
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Get use by ID"""
+    return User.query.get(int(user_id))
 
 
 # Database model (table)
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)

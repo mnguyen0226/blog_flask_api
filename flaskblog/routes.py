@@ -9,6 +9,7 @@ from flaskblog import db
 from flaskblog import bcrypt
 from flaskblog.models import User
 from flaskblog.models import Post
+from flask_login import login_user
 
 all_posts = [
     {
@@ -62,9 +63,13 @@ def login_page():
     form = LoginForm()
     # if not valid or unsuccessful, then stay at the same login page
     if form.validate_on_submit():
-        if form.email.data == "admin@blog.com" and form.password.data == "password":
-            flash(f"You have been logged in!", "success")
+        # Get data from the database
+        user = User.query.filter_by(email=form.email.data).first()
+
+        # Check the user exist and the password is the same, if so, keep the user login
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             return redirect(url_for("home_page"))
         else:
-            flash(f"Login Unsuccessful. Please check username and password", "danger")
+            flash(f"Login Unsuccessful. Please check email and password", "danger")
     return render_template("login.html", title="Login", form=form)
