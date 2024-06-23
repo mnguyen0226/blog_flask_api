@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import render_template
 from flask import url_for
+from flask import flash
+from flask import redirect
 from forms import RegistrationForm
 from forms import LoginForm
 
@@ -37,9 +39,16 @@ def about_page():
     return render_template("about.html", title="About Page")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register_page():
     form = RegistrationForm()
+
+    # after we hit submit, we need to validate the form prior to go
+    # back to the same Register Form, we will send in the one time alert
+    # we will then redirect the user back to the home page
+    if form.validate_on_submit():
+        flash(f"Account created for {form.username.data}!", "success")
+        return redirect(url_for("home_page"))
     return render_template("register.html", title="Register", form=form)
 
 
