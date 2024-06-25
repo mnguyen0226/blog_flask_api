@@ -30,3 +30,6 @@ python main.py
   - If login successful, if try to log-in again, we will redirect to about page
   - Put restriction on certain route once you login. Ex: You can't change post if not log-in.
   - Let's say we get to account but no login, we want the site to direct to login then go back to account, instead of home page
+- User Account:
+  - Need a form to update user account info.
+  - Note that if the user didn't change the username and email, they we don't want to ping the database

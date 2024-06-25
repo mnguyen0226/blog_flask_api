@@ -14,6 +14,10 @@ from flask_login import current_user
 from flask_login import logout_user
 from flask_login import login_required
 from flask import request
+from flaskblog.forms import UpdateAccountForm
+import secrets
+import os
+from PIL import Image
 
 all_posts = [
     {
@@ -103,7 +107,54 @@ def logout_page():
     return redirect(url_for("home_page"))
 
 
-@app.route("/account")
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account_page():
-    return render_template("account.html", title="Account")
+    form = UpdateAccountForm()
+
+    # If form is valid, we will update on the database for the current_user
+    # After submit the valid form, we redirect (get-request), if not we try with a post request again
+    if form.validate_on_submit():
+        # As picture is not a required field, we will save the picture in file path
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file  # set the image to the current image
+
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash("Your account has been updated!", "success")
+        return redirect(url_for("account_page"))  # GET request
+
+    # if not submit, then we can try to auto-fill the form
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    image_file = url_for("static", filename="profile_pics/" + current_user.image_file)
+    return render_template(
+        "account.html", title="Account", image_file=image_file, form=form
+    )
+
+
+def save_picture(form_picture):
+    """
+    Get the submited image object, extract the name, then save the object in the local project
+    directory with randomized hex name and return the name
+    """
+    random_hex = secrets.token_hex(8)
+    f_name, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, "static/profile_pics", picture_fn)
+
+    # Create the directory if it does not exist
+    os.makedirs(os.path.dirname(picture_path), exist_ok=True)
+
+    # Resize the image to faster the page
+    output_size = (125, 125)
+    img = Image.open(form_picture)
+    img.thumbnail(output_size)
+
+    # Save the picture
+    img.save(picture_path)
+    return picture_fn
